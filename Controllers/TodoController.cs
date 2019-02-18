@@ -56,5 +56,42 @@ namespace TodoApi.Controllers
 
             return CreatedAtAction (nameof(GetTodoItem), new TodoItem{ Id = item.Id }, item);
         }
+
+        // PUT: api/Todo/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTodoItem(long id, TodoItem item)
+        {
+            if (id != item.Id)
+            {
+                return BadRequest();
+            }
+
+            var todoItem = await _context.TodoItems.FindAsync(id);
+            if (todoItem == null)
+            {
+                return NotFound();
+            }
+
+            _context.Entry(item).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        //  DELETE: api/todo/
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTodoItem(long id)
+        {
+            var item = await _context.TodoItems.FindAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            _context.TodoItems.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
